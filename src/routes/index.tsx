@@ -2,7 +2,6 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { compressToEncodedURIComponent } from "lz-string";
 import { encrypt } from "@/utils/crypto";
-import { toast } from "sonner";
 import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -10,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { CopyIcon } from "lucide-react";
+import { copyToClipboard } from "@/utils/copy-to-clipboard";
 
 export const Route = createFileRoute("/")({
   component: App,
@@ -35,21 +35,7 @@ function App() {
   }, [note, phrase]);
 
   async function handleCopyToClipboard() {
-    if (!navigator.clipboard) {
-      toast.error("Clipboard API is not supported in this browser.");
-      return;
-    }
-    try {
-      await navigator.clipboard.writeText(noteUrl);
-      toast.success("Link is copied to clipboard");
-    } catch (error: any) {
-      console.error("Clipboard error:", error);
-      const message =
-        typeof error?.message === "string"
-          ? error.message
-          : "Failed to copy the link to clipboard.";
-      toast.error(message);
-    }
+    await copyToClipboard(noteUrl, "Link is copied to clipboard");
   }
 
   return (
@@ -82,22 +68,22 @@ function App() {
         </div>
       </CardContent>
       {note !== "" && (
-        <CardContent className="flex flex-col items-start">
+        <CardContent className="flex flex-col items-start overflow-hidden">
           <Separator className="mb-6" />
           <Label>Sharable link</Label>
           <p className="text-xs text-muted-foreground my-1">
             You can share this link for anyone to access:
           </p>
+          <Button className="my-2" onClick={handleCopyToClipboard}>
+            <CopyIcon /> Copy link
+          </Button>
           <a
             target="_blank"
             href={noteUrl}
-            className="text-2xl underline-offset-4 hover:underline break-words whitespace-pre-wrap overflow-hidden"
+            className="text-xl underline-offset-4 hover:underline break-words whitespace-pre-wrap w-full overflow-hidden"
           >
             {noteUrl}
           </a>
-          <Button className="mt-2" onClick={handleCopyToClipboard}>
-            <CopyIcon /> Copy link
-          </Button>
         </CardContent>
       )}
     </Card>
