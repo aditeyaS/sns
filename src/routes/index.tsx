@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
-import { CopyIcon } from "lucide-react";
+import { ChevronDownIcon, ChevronUpIcon, CopyIcon } from "lucide-react";
 import { copyToClipboard } from "@/utils/copy-to-clipboard";
 
 export const Route = createFileRoute("/")({
@@ -19,6 +19,7 @@ function App() {
   const [note, setNote] = useState<string>("");
   const [phrase, setPhrase] = useState<string>("");
   const [noteUrl, setNoteUrl] = useState<string>("");
+  const [showUrl, setShowUrl] = useState<boolean>(false);
 
   useEffect(() => {
     const baseUrl = window.location.origin;
@@ -77,13 +78,26 @@ function App() {
           <Button className="my-2" onClick={handleCopyToClipboard}>
             <CopyIcon /> Copy link
           </Button>
-          <a
-            target="_blank"
-            href={noteUrl}
-            className="text-xl underline-offset-4 hover:underline break-words whitespace-pre-wrap w-full overflow-hidden"
+          <button
+            className="mt-2 flex gap-1 text-muted-foreground text-xs underline-offset-4 hover:underline"
+            onClick={() => setShowUrl((p) => !p)}
           >
-            {noteUrl}
-          </a>
+            {showUrl ? "Hide link" : "Show link"}
+            {showUrl ? (
+              <ChevronUpIcon className="size-4" />
+            ) : (
+              <ChevronDownIcon className="size-4" />
+            )}
+          </button>
+          {showUrl && (
+            <a
+              target="_blank"
+              href={noteUrl}
+              className="mt-2 text-xl underline-offset-4 hover:underline break-words whitespace-pre-wrap w-full overflow-hidden"
+            >
+              {noteUrl}
+            </a>
+          )}
         </CardContent>
       )}
     </Card>
