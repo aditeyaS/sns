@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { compressToEncodedURIComponent } from "lz-string";
 import { encrypt } from "@/utils/crypto";
@@ -8,7 +8,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
-import { ChevronDownIcon, ChevronUpIcon, CopyIcon } from "lucide-react";
+import {
+  ChevronDownIcon,
+  ChevronUpIcon,
+  CopyIcon,
+  ExternalLinkIcon,
+} from "lucide-react";
 import { copyToClipboard } from "@/utils/copy-to-clipboard";
 
 export const Route = createFileRoute("/")({
@@ -19,7 +24,7 @@ function App() {
   const [note, setNote] = useState<string>("");
   const [phrase, setPhrase] = useState<string>("");
   const [noteUrl, setNoteUrl] = useState<string>("");
-  const [showUrl, setShowUrl] = useState<boolean>(false);
+  const [showUrl, setShowUrl] = useState<boolean>(true);
 
   useEffect(() => {
     const baseUrl = window.location.origin;
@@ -51,6 +56,9 @@ function App() {
             value={note}
             onChange={(e) => setNote(e.target.value)}
           />
+          <p className="text-xs text-muted-foreground">
+            Character count: {note.length}
+          </p>
         </div>
 
         <div className="space-y-2">
@@ -75,9 +83,16 @@ function App() {
           <p className="text-xs text-muted-foreground my-1">
             You can share this link for anyone to access:
           </p>
-          <Button className="my-2" onClick={handleCopyToClipboard}>
-            <CopyIcon /> Copy link
-          </Button>
+          <div className="my-2 space-x-2">
+            <Button onClick={handleCopyToClipboard}>
+              <CopyIcon /> Copy link
+            </Button>
+            <Button asChild variant={"outline"} onClick={handleCopyToClipboard}>
+              <Link target="_blank" to={noteUrl}>
+                <ExternalLinkIcon /> Open
+              </Link>
+            </Button>
+          </div>
           <button
             className="mt-2 flex gap-1 text-muted-foreground text-xs underline-offset-4 hover:underline"
             onClick={() => setShowUrl((p) => !p)}
@@ -93,7 +108,7 @@ function App() {
             <a
               target="_blank"
               href={noteUrl}
-              className="mt-2 text-xl underline-offset-4 hover:underline break-words whitespace-pre-wrap w-full overflow-hidden"
+              className="mt-2 text-primary font-mono underline-offset-4 hover:underline break-words whitespace-pre-wrap w-full overflow-hidden"
             >
               {noteUrl}
             </a>

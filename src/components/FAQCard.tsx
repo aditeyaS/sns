@@ -37,8 +37,8 @@ export function FAQCard({ hideFAQ }: Props) {
                 end of the url
               </span>
               <span>
-                <span className="font-bold">For not encrypted note:</span>
-                The note is compressed and attached at the end of the url
+                <span className="font-bold">For not encrypted note:</span> The
+                note is compressed and attached at the end of the url
               </span>
             </AccordionContent>
           </AccordionItem>
